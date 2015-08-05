@@ -9,7 +9,7 @@
 #import "HomeViewController.h"
 #import "BYDropdownMenu.h"
 #import "TitleMenuViewController.h"
-#import "AFNetworking.h"
+#import "HttpTool.h"
 #import "AccountTool.h"
 #import "TitleButton.h"
 #import "MJExtension.h"
@@ -68,16 +68,15 @@
  */
 - (void)setupUnreadCount
 {
-    AFHTTPRequestOperationManager *mgr = [[AFHTTPRequestOperationManager alloc] init];
     //    mgr.responseSerializer = [AFJSONResponseSerializer serializer];
     Account *account = [AccountTool account];
     NSMutableDictionary *postDic = [NSMutableDictionary dictionary];
     [postDic setObject:account.access_token forKey:@"access_token"];
     [postDic setObject:account.uid forKey:@"uid"];
-    [mgr GET:@"https://rm.api.weibo.com/2/remind/unread_count.json" parameters:postDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [HttpTool get:@"https://rm.api.weibo.com/2/remind/unread_count.json" parameters:postDic success:^(id json) {
         
         //  设置提醒数字
-        NSString *status = [responseObject[@"status"] description];
+        NSString *status = [json[@"status"] description];
         if ([status isEqualToString:@"0"]) {
             self.tabBarItem.badgeValue = nil;
             [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
@@ -85,11 +84,10 @@
             self.tabBarItem.badgeValue = status;
             [UIApplication sharedApplication].applicationIconBadgeNumber = [status intValue];
         }
-        BWLog(@"请求成功:%@\n",responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        BWLog(@"请求成功:%@\n",json);
+    } failure:^(NSError *error) {
         BWLog(@"请求不成功:%@",error);
     }];
-
 }
 /**
  *  集成下拉刷新
@@ -113,9 +111,6 @@
  */
 - (void)refreshStateChange:(UIRefreshControl *)refreshControl
 {
-    
-    AFHTTPRequestOperationManager *mgr = [[AFHTTPRequestOperationManager alloc] init];
-    //    mgr.responseSerializer = [AFJSONResponseSerializer serializer];
     Account *account = [AccountTool account];
     NSMutableDictionary *postDic = [NSMutableDictionary dictionary];
     [postDic setObject:account.access_token forKey:@"access_token"];
@@ -124,23 +119,24 @@
         [postDic setObject:lastStatusF.status.idstr forKey:@"since_id"];
     }
     
-    [mgr GET:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:postDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [HttpTool get:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:postDic success:^(id json) {
+    
         //  新微博数组
         [Status setupObjectClassInArray:^NSDictionary *{
             return @{@"pic_urls":@"Photo"};
         }];
-        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:responseObject[@"statuses"]];
+        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:json[@"statuses"]];
         NSArray *newFrames = [self statusFramesWithStatuses:newStatuses];
         NSRange range = NSMakeRange(0, newStatuses.count);
         NSIndexSet *set = [NSIndexSet indexSetWithIndexesInRange:range];
         //  添加到原数组前面
         [self.statusFrames insertObjects:newFrames atIndexes:set];
-        BWLog(@"请求成功:%@\n",responseObject);
+        BWLog(@"请求成功:%@\n",json);
         [self.tableView reloadData];
         [refreshControl endRefreshing];
         //  显示新微博数量
         [self showNewStatusesCount:newStatuses.count];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSError *error) {
         [refreshControl endRefreshing];
         BWLog(@"请求不成功:%@",error);
     }];
@@ -239,22 +235,23 @@
  */
 - (void)setuoUserInfo
 {
-    AFHTTPRequestOperationManager *mgr = [[AFHTTPRequestOperationManager alloc] init];
     Account *account = [AccountTool account];
     
     NSMutableDictionary *postDic = [NSMutableDictionary dictionary];
     [postDic setObject:account.access_token forKey:@"access_token"];
     [postDic setObject:account.uid forKey:@"uid"];
     
-    [mgr GET:@"https://api.weibo.com/2/users/show.json" parameters:postDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        account.name = responseObject[@"name"];
+    [HttpTool get:@"https://api.weibo.com/2/users/show.json" parameters:postDic success:^(id json) {
+        account.name = json[@"name"];
         [AccountTool saveAccount:account];
         UIButton *titleButton = (UIButton *)self.navigationItem.titleView;
         [titleButton setTitle:account.name forState:UIControlStateNormal];
-        BWLog(@"请求成功:%@",responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        BWLog(@"请求不成功:%@",error);
+        BWLog(@"请求成功:%@",json);
+
+    } failure:^(NSError *error) {
+         BWLog(@"请求不成功:%@",error);
     }];
+   
 }
 
 ///**
@@ -337,7 +334,6 @@
 - (void)loadMoreStatus
 {
     // 1.请求管理者
-    AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
     
     // 2.拼接请求参数
     Account *account = [AccountTool account];
@@ -354,12 +350,12 @@
     }
     
     // 3.发送请求
-    [mgr GET:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:params success:^(AFHTTPRequestOperation *operation, NSDictionary *responseObject) {
+    [HttpTool get:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:params success:^(id json) {
         // 将 "微博字典"数组 转为 "微博模型"数组
         [Status setupObjectClassInArray:^NSDictionary *{
             return @{@"pic_urls":@"Photo"};
         }];
-        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:responseObject[@"statuses"]];
+        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:json[@"statuses"]];
         
         // 将 HWStatus数组 转为 HWStatusFrame数组
         NSArray *newFrames = [self statusFramesWithStatuses:newStatuses];
@@ -372,7 +368,7 @@
         
         // 结束刷新(隐藏footer)
         self.tableView.tableFooterView.hidden = YES;
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSError *error) {
         BWLog(@"请求失败-%@", error);
         
         // 结束刷新

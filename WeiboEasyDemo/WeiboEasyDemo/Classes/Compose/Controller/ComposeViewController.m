@@ -9,7 +9,7 @@
 #import "ComposeViewController.h"
 #import "AccountTool.h"
 #import "EmotionTextView.h"
-#import "AFNetworking.h"
+#import "HttpTool.h"
 #import "MBProgressHUD+MJ.h"
 #import "ComposeToolBar.h"
 #import "ComposePhotosView.h"
@@ -208,18 +208,16 @@
 
 - (void)sendWithoutImage
 {
-    AFHTTPRequestOperationManager *mgr = [[AFHTTPRequestOperationManager alloc] init];
     Account *account = [AccountTool account];
     
     NSMutableDictionary *postDic = [NSMutableDictionary dictionary];
     [postDic setObject:account.access_token forKey:@"access_token"];
     [postDic setObject:self.textview.fullText forKey:@"status"];
     
-    
-    [mgr POST:@"https://api.weibo.com/2/statuses/update.json" parameters:postDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [HttpTool post:@"https://api.weibo.com/2/statuses/update.json" parameters:postDic success:^(id json) {
         [MBProgressHUD showSuccess:@"发表成功"];
-        BWLog(@"请求成功:%@",responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        BWLog(@"请求成功:%@",json);
+    } failure:^(NSError *error) {
         [MBProgressHUD showError:@"发表不成功"];
         BWLog(@"请求不成功:%@",error);
     }];
@@ -227,24 +225,34 @@
 
 - (void)sendWithImage
 {
-    AFHTTPRequestOperationManager *mgr = [[AFHTTPRequestOperationManager alloc] init];
     Account *account = [AccountTool account];
     
     NSMutableDictionary *postDic = [NSMutableDictionary dictionary];
     [postDic setObject:account.access_token forKey:@"access_token"];
     [postDic setObject:self.textview.text forKey:@"status"];
     
-    [mgr POST:@"https://upload.api.weibo.com/2/statuses/upload.json" parameters:postDic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    [HttpTool post:@"https://upload.api.weibo.com/2/statuses/upload.json" parameters:postDic constructingBodyWithBlock:^NSData *{
         UIImage *image = self.photosview.photos.firstObject;
         NSData *imgData = UIImageJPEGRepresentation(image, 1.0);
-        [formData appendPartWithFileData:imgData name:@"pic" fileName:@"text.jpg" mimeType:@"image/jpeg"];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        return imgData;
+    }success:^(id json) {
         [MBProgressHUD showSuccess:@"发表成功"];
-        BWLog(@"请求成功:%@",responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        BWLog(@"请求成功:%@",json);
+    } failure:^(NSError *error) {
         [MBProgressHUD showError:@"发表不成功"];
         BWLog(@"请求不成功:%@",error);
     }];
+//    [mgr POST: parameters:postDic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+//        UIImage *image = self.photosview.photos.firstObject;
+//        NSData *imgData = UIImageJPEGRepresentation(image, 1.0);
+//        [formData appendPartWithFileData:imgData name:@"pic" fileName:@"text.jpg" mimeType:@"image/jpeg"];
+//    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        [MBProgressHUD showSuccess:@"发表成功"];
+//        BWLog(@"请求成功:%@",responseObject);
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        [MBProgressHUD showError:@"发表不成功"];
+//        BWLog(@"请求不成功:%@",error);
+//    }];
 }
 #pragma mark - UITextViewDelegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
