@@ -1,0 +1,29 @@
+//
+//  WeiboEasyDemo.pch
+//  WeiboEasyDemo
+//
+//  Created by 姚犇 on 15/6/2.
+//  Copyright (c) 2015年 姚犇. All rights reserved.
+//
+
+#ifndef WeiboEasyDemo_WeiboEasyDemo_pch
+#define WeiboEasyDemo_WeiboEasyDemo_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#ifdef DEBUG //开发阶段
+#define BWLog(...)  NSLog(__VA_ARGS__)
+#else   // 发布阶段
+#define BWLog(...)
+#endif
+
+#import "Constant.h"
+#import "UIView+Extension.h"
+#import "UIBarButtonItem+Extension.h"
+#import "UIWindow+Extension.h"
+#import "NSDate+Extension.h"
+#import "NSString+Extension.h"
+#import "NSString+Emoji.h"
+#import "UITextView+Extension.h"
+#import "Const.h"
+#endif
