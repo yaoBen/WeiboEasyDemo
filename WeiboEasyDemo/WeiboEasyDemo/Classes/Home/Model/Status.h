@@ -16,6 +16,7 @@
 @property (nonatomic, copy)  NSString *source;
 //** 微博信息内容 */
 @property (nonatomic, copy)  NSString *text;
+@property (nonatomic, copy)  NSAttributedString *attributedText;
 //**  微博作者的用户信息字段 */
 @property (nonatomic, strong)  User *user;
 /**	string	微博创建时间*/
@@ -24,6 +25,8 @@
 @property (nonatomic, strong)  NSArray *pic_urls;
 /** 转发微博 */
 @property (nonatomic, strong)  Status *retweeted_status;
+/** 被转发微博的文字内容 */
+@property (nonatomic, copy)  NSAttributedString *retweetedAttributedText;
 
 /**	int	转发数*/
 @property (nonatomic, assign) int reposts_count;

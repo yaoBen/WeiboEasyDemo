@@ -15,6 +15,7 @@
 #import "StatusToolbar.h"
 #import "StatusPhotosView.h"
 #import "IconView.h"
+#import "StatusTextView.h"
 
 @interface StatusCell ()
 /* 原创微博 */
@@ -33,7 +34,7 @@
 /** 来源 */
 @property (nonatomic, weak)  UILabel *sourceLabel;
 /** 正文 */
-@property (nonatomic, weak)  UILabel *contentLabel;
+@property (nonatomic, weak)  StatusTextView *contentLabel;
 
 /* 转发微博 */
 /** 转发微博整体 */
@@ -127,8 +128,8 @@
     self.sourceLabel = sourceLabel;
     sourceLabel.font = kStatusCellSourceFont;
     /** 正文 */
-    UILabel *contentLabel = [[UILabel alloc] init];
-    contentLabel.numberOfLines = 0;
+    StatusTextView *contentLabel = [[StatusTextView alloc] init];
+//    contentLabel.numberOfLines = 0;
     contentLabel.font = kStatusCellContentFont;
     [originalView addSubview:contentLabel];
     self.contentLabel = contentLabel;
@@ -209,19 +210,19 @@
     self.sourceLabel.frame = (CGRect){sourceX,sourceY,sourceSize};
     
     /** 正文 */
-    self.contentLabel.text = status.text;
+    self.contentLabel.attributedText = status.attributedText;
     self.contentLabel.frame = statusFrame.contentLabelF;
     
     /*  转发微博  */
     if (status.retweeted_status) {
         Status *retweetedStatus = status.retweeted_status;
-        User *retweetedUser = retweetedStatus.user;
+//        User *retweetedUser = retweetedStatus.user;
         self.retweetedView.hidden = NO;
         /** 转发微博整体 */
         self.retweetedView.frame = statusFrame.retweetedViewF;
         /** 转发正文 */
-        NSString *retweetedContent = [NSString stringWithFormat:@"@%@ : %@",retweetedUser.name,retweetedStatus.text];
-        self.retweetedContentLabel.text = retweetedContent;
+//        NSString *retweetedContent = [NSString stringWithFormat:@"@%@ : %@",retweetedUser.name,retweetedStatus.text];
+        self.retweetedContentLabel.attributedText = status.retweetedAttributedText;
         self.retweetedContentLabel.frame = statusFrame.retweetedContentLabelF;
         /** 转发配图 */
         if (retweetedStatus.pic_urls.count){

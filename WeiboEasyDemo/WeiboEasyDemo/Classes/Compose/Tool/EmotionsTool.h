@@ -13,4 +13,9 @@
 
 + (void)saveRecentEmotion:(Emotion *)emotion;
 + (NSArray *)recentEmotions;
++ (NSArray *)defaultEmotions;
++ (NSArray *)emojiEmotions;
++ (NSArray *)lxhEmotions;
+
++ (Emotion *)emotionWithChs:(NSString *)chs;
 @end

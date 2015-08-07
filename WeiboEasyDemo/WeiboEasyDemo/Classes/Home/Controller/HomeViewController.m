@@ -20,6 +20,7 @@
 #import "StatusCell.h"
 #import "HWLoadMoreFooter.h"
 #import "Photo.h"
+#import "MJRefresh.h"
 
 @interface HomeViewController ()<BYDropdownMenuDelegate>
 @property (nonatomic, strong)  NSMutableArray *statusFrames;
@@ -58,9 +59,13 @@
  */
 - (void)setupUpRefresh
 {
-    HWLoadMoreFooter *footer = [HWLoadMoreFooter footer];
-    footer.hidden = YES;
-    self.tableView.tableFooterView = footer;
+//    HWLoadMoreFooter *footer = [HWLoadMoreFooter footer];
+//    footer.hidden = YES;
+//    self.tableView.tableFooterView = footer;
+    
+    self.tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [self loadMoreStatus];
+    }];
 }
 
 /**
@@ -94,14 +99,19 @@
  */
 - (void)setupRefresh
 {
-    //  1,添加刷新控件
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshStateChange:) forControlEvents:UIControlEventValueChanged];
-    [self.view addSubview:refreshControl];
-    //  2,进入刷新状态
-    [refreshControl beginRefreshing];
-    //  3,开始刷新
-    [self refreshStateChange:refreshControl];
+//    //  1,添加刷新控件
+//    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+//    [refreshControl addTarget:self action:@selector(refreshStateChange:) forControlEvents:UIControlEventValueChanged];
+//    [self.view addSubview:refreshControl];
+//    //  2,进入刷新状态
+//    [refreshControl beginRefreshing];
+//    //  3,开始刷新
+//    [self refreshStateChange:refreshControl];
+
+    self.tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [self refreshStateChange];
+    }];
+    [self.tableView.header beginRefreshing];
 }
 
 /**
@@ -109,7 +119,7 @@
  *
  *  @param refreshControl
  */
-- (void)refreshStateChange:(UIRefreshControl *)refreshControl
+- (void)refreshStateChange
 {
     Account *account = [AccountTool account];
     NSMutableDictionary *postDic = [NSMutableDictionary dictionary];
@@ -133,11 +143,11 @@
         [self.statusFrames insertObjects:newFrames atIndexes:set];
         BWLog(@"请求成功:%@\n",json);
         [self.tableView reloadData];
-        [refreshControl endRefreshing];
+        [self.tableView.header endRefreshing];
         //  显示新微博数量
         [self showNewStatusesCount:newStatuses.count];
     } failure:^(NSError *error) {
-        [refreshControl endRefreshing];
+        [self.tableView.header endRefreshing];
         BWLog(@"请求不成功:%@",error);
     }];
     
@@ -367,12 +377,12 @@
         [self.tableView reloadData];
         
         // 结束刷新(隐藏footer)
-        self.tableView.tableFooterView.hidden = YES;
+        [self.tableView.footer endRefreshing];
     } failure:^(NSError *error) {
         BWLog(@"请求失败-%@", error);
         
         // 结束刷新
-        self.tableView.tableFooterView.hidden = YES;
+        [self.tableView.footer endRefreshing];
     }];
 }
 
@@ -397,23 +407,23 @@
     return cell;
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    //    scrollView == self.tableView == self.view
-    // 如果tableView还没有数据，就直接返回
-    if (self.statusFrames.count == 0 || self.tableView.tableFooterView.isHidden == NO) return;
-    
-    CGFloat offsetY = scrollView.contentOffset.y;
-    // 当最后一个cell完全显示在眼前时，contentOffset的y值
-    CGFloat judgeOffsetY = scrollView.contentSize.height + scrollView.contentInset.bottom - scrollView.height - self.tableView.tableFooterView.height;
-    if (offsetY >= judgeOffsetY) { // 最后一个cell完全进入视野范围内
-        // 显示footer
-        self.tableView.tableFooterView.hidden = NO;
-        
-        // 加载更多的微博数据
-        [self loadMoreStatus];
-    }
-}
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+//{
+//    //    scrollView == self.tableView == self.view
+//    // 如果tableView还没有数据，就直接返回
+//    if (self.statusFrames.count == 0 || self.tableView.tableFooterView.isHidden == NO) return;
+//    
+//    CGFloat offsetY = scrollView.contentOffset.y;
+//    // 当最后一个cell完全显示在眼前时，contentOffset的y值
+//    CGFloat judgeOffsetY = scrollView.contentSize.height + scrollView.contentInset.bottom - scrollView.height - self.tableView.tableFooterView.height;
+//    if (offsetY >= judgeOffsetY) { // 最后一个cell完全进入视野范围内
+//        // 显示footer
+//        self.tableView.tableFooterView.hidden = NO;
+//        
+//        // 加载更多的微博数据
+//        [self loadMoreStatus];
+//    }
+//}
 
 #pragma mark - Table view Delegate
 
