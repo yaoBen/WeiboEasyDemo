@@ -216,10 +216,10 @@
     
     [HttpTool post:@"https://api.weibo.com/2/statuses/update.json" parameters:postDic success:^(id json) {
         [MBProgressHUD showSuccess:@"发表成功"];
-        BWLog(@"请求成功:%@",json);
+//        BWLog(@"请求成功:%@",json);
     } failure:^(NSError *error) {
         [MBProgressHUD showError:@"发表不成功"];
-        BWLog(@"请求不成功:%@",error);
+//        BWLog(@"请求不成功:%@",error);
     }];
 }
 
@@ -237,10 +237,10 @@
         return imgData;
     }success:^(id json) {
         [MBProgressHUD showSuccess:@"发表成功"];
-        BWLog(@"请求成功:%@",json);
+//        BWLog(@"请求成功:%@",json);
     } failure:^(NSError *error) {
         [MBProgressHUD showError:@"发表不成功"];
-        BWLog(@"请求不成功:%@",error);
+//        BWLog(@"请求不成功:%@",error);
     }];
 //    [mgr POST: parameters:postDic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
 //        UIImage *image = self.photosview.photos.firstObject;

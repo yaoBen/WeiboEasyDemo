@@ -12,6 +12,7 @@
 #import "TextPart.h"
 #import "EmotionsTool.h"
 #import "Emotion.h"
+#import "Special.h"
 @implementation Status
 
 
@@ -21,7 +22,7 @@
     dateFm.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     dateFm.dateFormat = @"EEE MMM dd HH:mm:ss Z yyyy";
     NSDate *createdDate = [dateFm dateFromString:_created_at];
-    BWLog(@"created date :%@",createdDate);
+//    BWLog(@"created date :%@",createdDate);
 
     NSCalendarUnit unit = NSCalendarUnitHour | NSCalendarUnitMinute;
     NSCalendar *calendar = [NSCalendar currentCalendar];
@@ -105,9 +106,10 @@
         return part1.range.location > part2.range.location ? NSOrderedDescending : NSOrderedAscending;
     }];
     
-    BWLog(@"parts:%@",parts);
+//    BWLog(@"parts:%@",parts);
     UIFont *font = [UIFont systemFontOfSize:15];
     NSAttributedString *subStr = nil;
+    NSMutableArray *specials = [NSMutableArray array];
     for (TextPart *part in parts) {
         if (part.isEmotion) {
             NSString *name = [EmotionsTool emotionWithChs:part.text].png;
@@ -120,12 +122,20 @@
                 subStr = [[NSAttributedString alloc] initWithString:part.text];
             }
         } else if(part.isSpecial) {
+            Special *special = [[Special alloc] init];
+            special.text = part.text;
+            NSUInteger loc = attributedText.length;
+            NSUInteger length = part.text.length;
+            special.range = NSMakeRange(loc, length);
             subStr = [[NSAttributedString alloc] initWithString:part.text attributes:@{NSForegroundColorAttributeName:[UIColor blueColor]}];
+            [specials addObject:special];
         }else{
             subStr = [[NSAttributedString alloc] initWithString:part.text];
         }
         [attributedText appendAttributedString:subStr];
     }
+    BWLog(@"specials:%@",specials);
+    [attributedText addAttribute:@"specials" value:specials range:NSMakeRange(0, 1)];
     [attributedText addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, attributedText.length)];
     return attributedText;
 

@@ -54,6 +54,7 @@
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
 
+
 /**
  *  集成上拉刷新控件
  */
@@ -89,9 +90,9 @@
             self.tabBarItem.badgeValue = status;
             [UIApplication sharedApplication].applicationIconBadgeNumber = [status intValue];
         }
-        BWLog(@"请求成功:%@\n",json);
+//        BWLog(@"请求成功:%@\n",json);
     } failure:^(NSError *error) {
-        BWLog(@"请求不成功:%@",error);
+//        BWLog(@"请求不成功:%@",error);
     }];
 }
 /**
@@ -141,14 +142,14 @@
         NSIndexSet *set = [NSIndexSet indexSetWithIndexesInRange:range];
         //  添加到原数组前面
         [self.statusFrames insertObjects:newFrames atIndexes:set];
-        BWLog(@"请求成功:%@\n",json);
+//        BWLog(@"请求成功:%@\n",json);
         [self.tableView reloadData];
         [self.tableView.header endRefreshing];
         //  显示新微博数量
         [self showNewStatusesCount:newStatuses.count];
     } failure:^(NSError *error) {
         [self.tableView.header endRefreshing];
-        BWLog(@"请求不成功:%@",error);
+//        BWLog(@"请求不成功:%@",error);
     }];
     
 }
@@ -256,10 +257,10 @@
         [AccountTool saveAccount:account];
         UIButton *titleButton = (UIButton *)self.navigationItem.titleView;
         [titleButton setTitle:account.name forState:UIControlStateNormal];
-        BWLog(@"请求成功:%@",json);
+//        BWLog(@"请求成功:%@",json);
 
     } failure:^(NSError *error) {
-         BWLog(@"请求不成功:%@",error);
+//         BWLog(@"请求不成功:%@",error);
     }];
    
 }
@@ -433,6 +434,10 @@
     return statusF.cellHeight;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    BWLog(@"didSelectRowAtIndexPath------->%zd",indexPath.row);
+}
 
 #pragma mark - BYDropdownMenu Delegate
 

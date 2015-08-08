@@ -126,6 +126,7 @@
 		D2E045F41B5F92CE00112E2B /* IconView.m in Sources */ = {isa = PBXBuildFile; fileRef = D2E045F31B5F92CE00112E2B /* IconView.m */; };
 		D2E3C11D1B5748AC00EFB5D4 /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = D2E3C11C1B5748AC00EFB5D4 /* Photo.m */; };
 		D2E9A3FA1B74471200D5AD38 /* StatusTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D2E9A3F91B74471200D5AD38 /* StatusTextView.m */; };
+		D2E9A3FD1B74888F00D5AD38 /* Special.m in Sources */ = {isa = PBXBuildFile; fileRef = D2E9A3FC1B74888F00D5AD38 /* Special.m */; };
 		D2F447CE1B68A9F00032ABC0 /* EmotionTabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F447CD1B68A9F00032ABC0 /* EmotionTabBarButton.m */; };
 		D2F909A51B69CF4000DA0E1A /* EmotionIcons in Resources */ = {isa = PBXBuildFile; fileRef = D2F909A41B69CF4000DA0E1A /* EmotionIcons */; };
 		D2F909A91B69D17500DA0E1A /* Emotion.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F909A81B69D17500DA0E1A /* Emotion.m */; };
@@ -378,6 +379,8 @@
 		D2E3C11C1B5748AC00EFB5D4 /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
 		D2E9A3F81B74471200D5AD38 /* StatusTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusTextView.h; sourceTree = "<group>"; };
 		D2E9A3F91B74471200D5AD38 /* StatusTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusTextView.m; sourceTree = "<group>"; };
+		D2E9A3FB1B74888F00D5AD38 /* Special.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Special.h; sourceTree = "<group>"; };
+		D2E9A3FC1B74888F00D5AD38 /* Special.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Special.m; sourceTree = "<group>"; };
 		D2F447CC1B68A9F00032ABC0 /* EmotionTabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmotionTabBarButton.h; sourceTree = "<group>"; };
 		D2F447CD1B68A9F00032ABC0 /* EmotionTabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmotionTabBarButton.m; sourceTree = "<group>"; };
 		D2F909A41B69CF4000DA0E1A /* EmotionIcons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EmotionIcons; sourceTree = "<group>"; };
@@ -653,6 +656,8 @@
 				D2C8FC551B415B04002E3788 /* User.m */,
 				D2C8FC571B415B18002E3788 /* Status.h */,
 				D2C8FC581B415B18002E3788 /* Status.m */,
+				D2E9A3FB1B74888F00D5AD38 /* Special.h */,
+				D2E9A3FC1B74888F00D5AD38 /* Special.m */,
 				D2AA2E481B5525DB00489367 /* StatusFrame.h */,
 				D2AA2E491B5525DB00489367 /* StatusFrame.m */,
 				D2E3C11B1B5748AC00EFB5D4 /* Photo.h */,
@@ -1275,6 +1280,7 @@
 				D2C8FC561B415B04002E3788 /* User.m in Sources */,
 				D284C9A81B2044AB00023DB3 /* TabbarViewController.m in Sources */,
 				D2086ADE1B71F70200CDAD95 /* MJRefreshNormalHeader.m in Sources */,
+				D2E9A3FD1B74888F00D5AD38 /* Special.m in Sources */,
 				D2086AD91B71F70200CDAD95 /* MJRefreshAutoStateFooter.m in Sources */,
 				D2086ADB1B71F70200CDAD95 /* MJRefreshBackNormalFooter.m in Sources */,
 				D2B420791B3E9A0F0053AB58 /* TitleButton.m in Sources */,

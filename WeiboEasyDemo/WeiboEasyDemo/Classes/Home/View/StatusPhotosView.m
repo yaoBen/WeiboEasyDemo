@@ -62,7 +62,7 @@
     
 }
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     int photosCount = (int)self.photos.count;

@@ -92,10 +92,10 @@
         UIWindow *window = [UIApplication sharedApplication].keyWindow;
         [window switchRootViewController];
         
-        BWLog(@"请求成功:%@",json);
+//        BWLog(@"请求成功:%@",json);
 
     } failure:^(NSError *error) {
-        BWLog(@"请求不成功:%@",error);
+//        BWLog(@"请求不成功:%@",error);
 
     }];
    }

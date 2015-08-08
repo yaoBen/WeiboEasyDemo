@@ -40,7 +40,7 @@
 /** 转发微博整体 */
 @property (nonatomic, weak)  UIView *retweetedView;
 /** 转发微博正文 */
-@property (nonatomic, weak)  UILabel *retweetedContentLabel;
+@property (nonatomic, weak)  StatusTextView *retweetedContentLabel;
 /** 转发微博配图 */
 @property (nonatomic, weak)  StatusPhotosView *retweetedPhotosView;
 /* 微博工具条 */
@@ -145,8 +145,8 @@
     self.retweetedView = retweetedView;
     
     /** 转发微博正文 */
-    UILabel *retweetedContentLabel = [[UILabel alloc] init];
-    retweetedContentLabel.numberOfLines = 0;
+    StatusTextView *retweetedContentLabel = [[StatusTextView alloc] init];
+//    retweetedContentLabel.numberOfLines = 0;
     retweetedContentLabel.font = kStatusCellRetweetedContentFont;
     [retweetedView addSubview:retweetedContentLabel];
     self.retweetedContentLabel = retweetedContentLabel;
