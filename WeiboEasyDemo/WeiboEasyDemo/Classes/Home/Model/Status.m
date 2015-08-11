@@ -134,7 +134,6 @@
         }
         [attributedText appendAttributedString:subStr];
     }
-    BWLog(@"specials:%@",specials);
     [attributedText addAttribute:@"specials" value:specials range:NSMakeRange(0, 1)];
     [attributedText addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, attributedText.length)];
     return attributedText;

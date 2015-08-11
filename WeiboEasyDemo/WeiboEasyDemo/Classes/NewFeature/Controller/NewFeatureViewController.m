@@ -92,12 +92,12 @@
     [shareBtn addTarget:self action:@selector(shareClick:) forControlEvents:UIControlEventTouchUpInside];
     //  添加开始微博按钮
     UIButton *startBtn = [[UIButton alloc] init];
-    startBtn.backgroundColor = [UIColor redColor];
-    [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_button"] forState:UIControlStateNormal];
+    [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_finish_button"] forState:UIControlStateNormal];
     [startBtn setBackgroundImage:[UIImage imageNamed:@"new_feature_button_highlighted"] forState:UIControlStateHighlighted];
+    [startBtn setTitle:@"开始微博" forState:UIControlStateNormal];
     startBtn.size = startBtn.currentBackgroundImage.size;
     startBtn.centerX = imageView.width * 0.5;
-    startBtn.y = imageView.height * 0.75;
+    startBtn.y = CGRectGetMaxY(shareBtn.frame) + 10;
     [imageView addSubview:startBtn];
     [startBtn addTarget:self action:@selector(startClick:) forControlEvents:UIControlEventTouchUpInside];
     

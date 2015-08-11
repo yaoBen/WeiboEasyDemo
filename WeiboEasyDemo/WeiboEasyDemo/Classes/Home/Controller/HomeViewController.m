@@ -20,6 +20,7 @@
 #import "StatusCell.h"
 #import "HWLoadMoreFooter.h"
 #import "Photo.h"
+#import "StatusTool.h"
 #import "MJRefresh.h"
 
 @interface HomeViewController ()<BYDropdownMenuDelegate>
@@ -129,29 +130,38 @@
     if (lastStatusF) {
         [postDic setObject:lastStatusF.status.idstr forKey:@"since_id"];
     }
-    
-    [HttpTool get:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:postDic success:^(id json) {
-    
+    // 处理字典数据(block)
+    void(^dealingResult)(NSArray *) = ^(NSArray *statuses){
         //  新微博数组
         [Status setupObjectClassInArray:^NSDictionary *{
             return @{@"pic_urls":@"Photo"};
         }];
-        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:json[@"statuses"]];
+        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:statuses];
         NSArray *newFrames = [self statusFramesWithStatuses:newStatuses];
         NSRange range = NSMakeRange(0, newStatuses.count);
         NSIndexSet *set = [NSIndexSet indexSetWithIndexesInRange:range];
         //  添加到原数组前面
         [self.statusFrames insertObjects:newFrames atIndexes:set];
-//        BWLog(@"请求成功:%@\n",json);
+        //        BWLog(@"请求成功:%@\n",json);
         [self.tableView reloadData];
         [self.tableView.header endRefreshing];
         //  显示新微博数量
         [self showNewStatusesCount:newStatuses.count];
-    } failure:^(NSError *error) {
-        [self.tableView.header endRefreshing];
-//        BWLog(@"请求不成功:%@",error);
-    }];
-    
+    };
+    NSArray *statuses = [StatusTool statusesWithParams:postDic];
+    if (statuses.count) {// 有缓存数据
+        dealingResult(statuses);
+    }else{// 发送网络请求（没有缓存数据）
+        [HttpTool get:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:postDic success:^(id json) {
+            
+            [StatusTool saveStatuses:json[@"statuses"]];
+            dealingResult(json[@"statuses"]);
+        } failure:^(NSError *error) {
+            [self.tableView.header endRefreshing];
+            //        BWLog(@"请求不成功:%@",error);
+        }];
+
+    }
 }
 
 /**
@@ -359,14 +369,13 @@
         long long maxId = lastStatusF.status.idstr.longLongValue - 1;
         params[@"max_id"] = @(maxId);
     }
-    
-    // 3.发送请求
-    [HttpTool get:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:params success:^(id json) {
-        // 将 "微博字典"数组 转为 "微博模型"数组
+    // 字典数据的处理
+    void(^dealingResult)(NSArray *) = ^(NSArray *statuses){
         [Status setupObjectClassInArray:^NSDictionary *{
             return @{@"pic_urls":@"Photo"};
         }];
-        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:json[@"statuses"]];
+        
+        NSArray *newStatuses = [Status objectArrayWithKeyValuesArray:statuses];
         
         // 将 HWStatus数组 转为 HWStatusFrame数组
         NSArray *newFrames = [self statusFramesWithStatuses:newStatuses];
@@ -379,12 +388,23 @@
         
         // 结束刷新(隐藏footer)
         [self.tableView.footer endRefreshing];
-    } failure:^(NSError *error) {
-        BWLog(@"请求失败-%@", error);
-        
-        // 结束刷新
-        [self.tableView.footer endRefreshing];
-    }];
+    };
+    NSArray *statuses = [StatusTool statusesWithParams:params];
+    if (statuses.count) {
+        dealingResult(statuses);
+    }else{
+        // 3.发送请求
+        [HttpTool get:@"https://api.weibo.com/2/statuses/friends_timeline.json" parameters:params success:^(id json) {
+            [StatusTool saveStatuses:json[@"statuses"]];
+            dealingResult(json[@"statuses"]);
+           
+        } failure:^(NSError *error) {
+            BWLog(@"请求失败-%@", error);
+            
+            // 结束刷新
+            [self.tableView.footer endRefreshing];
+        }];
+    }
 }
 
 #pragma mark - Table view data source
