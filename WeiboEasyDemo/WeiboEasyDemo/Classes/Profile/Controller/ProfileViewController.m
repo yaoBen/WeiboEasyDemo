@@ -7,6 +7,7 @@
 //
 
 #import "ProfileViewController.h"
+#import "SDWebImageManager.h"
 
 @interface ProfileViewController ()
 
@@ -18,9 +19,25 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStylePlain target:self action:@selector(setting)];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStylePlain target:self action:@selector(setting)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"清除缓存" style:UIBarButtonItemStylePlain target:self action:@selector(clearCanche)];
+    NSInteger byteSize = [SDImageCache sharedImageCache].getSize;
+    double size = byteSize / 1000. /1000.;
+    self.navigationItem.title = [NSString stringWithFormat:@"缓存大小(%.1fM)",size];
+    
+    NSString *caches = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
+
+    BWLog(@"%zd-----%@",[caches pathFileSize],caches);
 }
 
+- (void)clearCanche
+{
+
+    [[SDImageCache sharedImageCache] clearDisk];
+
+    self.navigationItem.title = @"缓存大小0M";
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"清除缓存" style:UIBarButtonItemStylePlain target:self action:@selector(clearCanche)];
+}
 - (void)setting
 {
     BWLog(@"setting");

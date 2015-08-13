@@ -12,4 +12,6 @@
 
 - (CGSize)sizeWithFount:(UIFont *)font maxW:(CGFloat)maxW;
 - (CGSize)sizeWithFount:(UIFont *)font;
+
+- (NSInteger)pathFileSize;
 @end

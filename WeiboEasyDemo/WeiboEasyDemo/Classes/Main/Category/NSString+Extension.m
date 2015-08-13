@@ -20,4 +20,29 @@
 {
     return [self sizeWithFount:font maxW:MAXFLOAT];
 }
+
+- (NSInteger)pathFileSize
+{
+    NSFileManager *mgr = [NSFileManager defaultManager];
+   
+    NSInteger totalSize;
+    BOOL dir;
+    BOOL exist = [mgr fileExistsAtPath:self isDirectory:&dir];
+    if (exist == NO) return 0;
+    
+    if (dir) {
+        NSArray *subFiles = [mgr subpathsOfDirectoryAtPath:self error:nil];
+        for (NSString *subPath in subFiles) {
+            NSString *fullName = [self stringByAppendingPathComponent:subPath];
+            [mgr fileExistsAtPath:fullName isDirectory:&dir];
+            if (!dir) {
+                totalSize += [[mgr attributesOfItemAtPath:fullName error:nil][NSFileSize] integerValue];
+            }
+        }
+        return totalSize;
+    }else{
+        return [[mgr attributesOfItemAtPath:self error:nil][NSFileSize] integerValue];
+    }
+    
+}
 @end

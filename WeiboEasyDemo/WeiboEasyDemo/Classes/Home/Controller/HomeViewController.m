@@ -53,6 +53,7 @@
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(setupUnreadCount) userInfo:nil repeats:YES];
     //  主线程会抽出一些时间来处理timer(不管主线程是否在处理其他事件)
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    
 }
 
 

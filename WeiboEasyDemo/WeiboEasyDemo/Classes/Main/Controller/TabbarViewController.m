@@ -86,6 +86,7 @@
     [childVc.tabBarItem setTitleTextAttributes:seletedTextattr forState:UIControlStateSelected];
 //    childVc.view.backgroundColor = BWRandomColor;
     NavigationViewController *nav = [[NavigationViewController alloc] initWithRootViewController:childVc];
+    
     [self addChildViewController:nav];
 }
 
